@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+    <title class='notranslate'>JOBPLANET</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Material+Icons">
+
+    <style type="text/css">
+      iframe.goog-te-banner-frame { display: none !important; }
+      body { position: static !important; top:0px !important; }
+    </style>
+  </head>
+
+  <body>
+    <script type="text/javascript" src="main.js"></script>
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/velocity/1.1.0/velocity.js"></script>
+
+
+    <script type="text/javascript">
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement({pageLanguage: 'ko', layout: google.translate.TranslateElement.FloatPosition.TOP_LEFT}, 'google_translate_element');
+      }
+
+      function triggerHtmlEvent(element, eventName) {
+        var event;
+        if (document.createEvent) {
+          event = document.createEvent('HTMLEvents');
+          event.initEvent(eventName, true, true);
+          element.dispatchEvent(event);
+        } else {
+          event = document.createEventObject();
+          event.eventType = eventName;
+          element.fireEvent('on' + event.eventType, event);
+        }
+      }
+    </script>
+
+
+    <noscript>
+      <strong>We're sorry but ssafy doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+    </noscript>
+    <div id="app"></div>
+    <!-- built files will be auto injected -->
+  </body>
+</html>

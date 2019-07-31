@@ -1,0 +1,48 @@
+{
+  "name": "ssafy",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build"
+  },
+  "dependencies": {
+    "@inotom/vue-go-top": "^1.1.0",
+    "@jeremyhamm/vue-slider": "^0.1.16",
+    "axios": "^0.19.0",
+    "core-js": "^2.6.5",
+    "firebase": "^5.9.3",
+    "firebase-admin": "^8.3.0",
+    "firebase-functions": "^3.2.0",
+    "firebase-tools": "^7.2.1",
+    "google-translate-api": "^2.3.0",
+    "http2": "^3.3.7",
+    "iso-8859-2": "^1.0.0",
+    "moment": "^2.24.0",
+    "pg-calendar": "^1.4.30",
+    "register-service-worker": "^1.6.2",
+    "vue": "^2.6.10",
+    "vue-backtotop": "^1.6.1",
+    "vue-bookmark": "0.0.4",
+    "vue-favorite": "^1.0.1",
+    "vue-line-clamp": "^1.3.2",
+    "vue-moment": "^4.0.0",
+    "vue-mq": "^1.0.1",
+    "vue-router": "^3.0.1",
+    "vue-simplemde": "^0.5.2",
+    "vue-weather-widget": "^2.1.7",
+    "vuetify": "^1.5.5",
+    "vuex": "^3.0.1"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^3.0.4",
+    "@vue/cli-plugin-pwa": "^3.0.4",
+    "@vue/cli-service": "^3.9.2",
+    "font-awesome": "^4.7.0",
+    "stylus": "^0.54.5",
+    "stylus-loader": "^3.0.1",
+    "vue-cli-plugin-vuetify": "^0.5.0",
+    "vue-template-compiler": "^2.5.21",
+    "vuetify-loader": "^1.0.5"
+  }
+}
