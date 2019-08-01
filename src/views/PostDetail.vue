@@ -102,9 +102,9 @@ export default {
     async getComments(id) {
       this.comments_edit = []
       this.comments = await FirebaseService.getComments(id);
-      await FirebaseService.test()
       await FirebaseService.alarm()
       await FirebaseService.MessageSendTest()
+      await FirebaseService.test()
     },
 
     // 댓글 생성

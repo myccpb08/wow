@@ -200,6 +200,9 @@ export default {
         this.closeDialog()
         this.$router.replace('/')
         FirebaseService.addLog(this.$store.state.user.uid,"login with mail")
+
+        // 로그인하면, token 얻기
+        FirebaseService.gettingtoken()
       })
       .catch((error)=>{
         alert(error)
@@ -216,7 +219,10 @@ export default {
       FirebaseService.addLog(this.$store.state.user.uid,"login with google")
       FirebaseService.initUserClass(result.user, "visitor")
       this.$router.replace('/')
+
+      FirebaseService.gettingtoken()
     },
+
     async loginWithFacebook() {
       const result = await FirebaseService.loginWithFacebook()
       this.$store.state.accessToken = result.credential.accessToken
@@ -228,7 +234,10 @@ export default {
       FirebaseService.addLog(this.$store.state.user.uid,"login with facebook")
       FirebaseService.initUserClass(result.user, "visitor")
       this.$router.replace('/')
+
+      FirebaseService.gettingtoken()
     },
+    
     signUp(){
       firebase.auth().createUserWithEmailAndPassword(this.signupEmail, this.signupPassword)
       .then((user)=>{
@@ -281,7 +290,7 @@ export default {
   },
   mounted(){
 
-    if(localStorage.getItem("user")!=null && localStorage.getItem("user")!=''){
+    if( localStorage.getItem("user") !=null && localStorage.getItem("user")!=''){
       this.$store.state.user = JSON.parse(localStorage.getItem("user") || "{}");
       this.$store.state.accessToken = localStorage.getItem('accessToken');
     }

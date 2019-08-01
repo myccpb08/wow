@@ -1,53 +1,64 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
-admin.initializeApp(functions.config().firebase);
 
-// // Create and Deploy Your First Cloud Functions
-// // https://firebase.google.com/docs/functions/write-firebase-functions
-//
-// exports.helloWorld = functions.https.onRequest((request, response) => {
-//  response.send("Hello from Firebase!");
-// });
+admin.initializeApp(functions.config().firebase);
+var db = admin.firestore()
+
 
 exports.sendToDeviceNoti = functions.firestore.document('/posts/{any}')
-    .onWrite(event => {
-        // Notification details.
+    .onCreate(event => {
         const payload = {
             notification: {
-                title: '테스트왔어요',
+                title: '포스트 폴더에 변경 생겨써',
                 body: 'This is send to device test'
             }
         };
-        return admin.messaging().sendToDevice('dcUfi06MlDo:APA91bEupBnhfHpn1Zpv3-JMUs44oJn-SW4wp9gbzRmef4PsSdU3RgpYqbP-pniZQvVg1muJpoERr3BDeCgRiQhk08BE-96gm2JWr3EAxllb-Fgnl17xcxobEQX0rW3Bv59KVE_CiQQu', payload);
+        console.log(db)
+        // db.collection('tokens')
+        // .get()
+        // .then((snapshot)=>{
+        //   snapshot.forEach(doc => {
+        //     admin.messaging().sendToDevice(doc.data()['test_token'], payload);
+        //   })
+        // })
+        // return admin.messaging().sendToDevice('eS4XbxP6vXU:APA91bGJitzI8MwLCbvWdSNF2mDg0FhHt4RbMPhbqQ35LXyCXy5MO_IC3XUjEMhntROAMCWajeQWv3kpyI9BDJ7PBQBh31OBcYw7rmuwsjDOiRfnwoSrK0KzPh9HaXSNQf4PrIOqJ0Vk', payload);
     });
+    exports.createPortfolio = functions.firestore
+        .document('posts/{Id}')
+        .onCreate((snap, context) => {
+
+            db.collection('tokens').get().then((snapshot) => {
+                    snapshot.forEach(doc => {
+                        if (doc.data()['test_token']) {
+                            var message = {
+                                data: {
+                                    title: 'New',
+                                    body: 'New Portfolio'
+                                },
+                                token: doc.data()['test_token']
+                            };
 
 
+                            // Send a message to the device corresponding to the provided
+                            // registration token.
+                            admin.messaging().send(message)
+                                .then((response) => {
+                                    // Response is a message ID string.
+                                    console.log('Successfully sent message:', response);
+                                })
+                                .catch((error) => {
+                                    console.log('Error sending message:', error);
+                                });
+                        }
+                    });
+                })
+                .catch(err => {
+                    console.log('Error getting documents', err);
+                });
 
-exports.sendToDeviceNotification = functions.database.ref('/')
-    .onWrite(event => {
-        // Notification details.
-        const payload = {
-            notification: {
-                title: 'SendToDevice Test',
-                body: 'This is send to device test'
-            }
-        };
-        return admin.messaging().sendToDevice('dcUfi06MlDo:APA91bEupBnhfHpn1Zpv3-JMUs44oJn-SW4wp9gbzRmef4PsSdU3RgpYqbP-pniZQvVg1muJpoERr3BDeCgRiQhk08BE-96gm2JWr3EAxllb-Fgnl17xcxobEQX0rW3Bv59KVE_CiQQu', payload);
-    });
-
-
-
-exports.myFunction = functions.firestore
-    .document('...')
-  .onWrite((change, context) => { console.log("새글임")});
-
-  // Take the text parameter passed to this HTTP endpoint and insert it into the
-// Realtime Database under the path /messages/:pushId/original
-exports.addMessage = functions.https.onRequest(async (req, res) => {
-    // Grab the text parameter.
-    const original = req.query.text;
-    // Push the new message into the Realtime Database using the Firebase Admin SDK.
-    const snapshot = await admin.database().ref('/messages').push({original: original});
-    // Redirect with 303 SEE OTHER to the URL of the pushed object in the Firebase console.
-    res.redirect(303, snapshot.ref.toString());
-  });
+            // // Create and Deploy Your First Cloud Functions
+            // // https://firebase.google.com/docs/functions/write-firebase-functions
+            //
+            // exports.helloWorld = functions.https.onRequest((request, response) => {
+            //  response.send("Hello from Firebase!");
+        });

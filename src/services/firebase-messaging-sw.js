@@ -1,8 +1,5 @@
 // 서비스워커 파일
 
-importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-app.js');
-importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-messaging.js');
-
 const config = {
    projectId: 'ssafy-245804',
    authDomain: 'ssafy-245804.firebaseapp.com',

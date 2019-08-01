@@ -21,6 +21,7 @@ import MainHeader from './components/MainHeader'
 import MainFooter from './components/MainFooter'
 import Vue from 'vue'
 import BackToTop from 'vue-backtotop'
+import firebaseservice from './services/FirebaseService'
 
 import $ from 'jquery'
 Vue.use(BackToTop)
@@ -37,8 +38,20 @@ export default {
   components: {
     'MainHeader' : MainHeader,
     'MainFooter' : MainFooter,
-    BackToTop,
+    BackToTop},
+
+  methods : {
+    wwing(){
+      console.log(222)
+      // var my_token = firebaseservice.gettingtoken()
+      // console.log(my_token)
+    }
+  },
+
+  mounted(){
+    this.wwing()
   }
+
 }
 
 </script>

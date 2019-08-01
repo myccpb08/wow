@@ -1,5 +1,6 @@
 import firebase from 'firebase/app'
 import 'firebase/firestore'
+import 'firebase/database'
 import 'firebase/auth'
 import 'firebase/storage'
 import 'firebase/messaging'
@@ -9,6 +10,7 @@ const PORTFOLIOS = 'portfolios'
 const BANNER = 'banner'
 const USERS = 'users'
 const SNS = 'post-comments'
+const TOKEN = 'tokens'
 
 
 // Setup Firebase
@@ -24,62 +26,66 @@ const config = {
 
 firebase.initializeApp(config)
 const firestore = firebase.firestore()
+const database = firebase.database()
 const messaging = firebase.messaging()
 
 const functions = require('firebase-functions');
 const admin = require('firebase-admin')
 admin.initializeApp()
-//
+
+
+// 메시징 객체 검색 : Retrieve Firebase Messaging object
+// 알림 수신 권한 요청 (알림 대화상자 동의할지 권한)
+
 
 export default {
+  gettingtoken(){
+    messaging.usePublicVapidKey('BH4H7pKz2nJHRkzwWzgUtSna-zCJzPM-KeR_MemZjinDVVuEzd6FulRn_P4zIxZFObFkE_mvIOnKHrrBING55ZE')
+    messaging.getToken().then(function(currentToken) {
+      if (currentToken) {
+        var test_token = currentToken
+        console.log(test_token)
+
+        // firebase.database().ref('/').push({
+        //    test_token
+        // })
+
+        firestore.collection(TOKEN).doc(test_token).set({
+          test_token : test_token
+        })
+
+      } else {
+        console.log('No Instance ID token available. Request permission to generate one.');        // Show permission UI.
+      }
+    }).catch(function(err) {
+      console.log('An error occurred while retrieving token. ', err);
+    })
+  },
 
   alarm() {
-    // 메시징 객체 검색 : Retrieve Firebase Messaging object
-    messaging.usePublicVapidKey('BH4H7pKz2nJHRkzwWzgUtSna-zCJzPM-KeR_MemZjinDVVuEzd6FulRn_P4zIxZFObFkE_mvIOnKHrrBING55ZE')
 
-    // 알림 수신 권한 요청 (알림 대화상자 동의할지 권한)
     Notification.requestPermission().then(function(permission) {
       if (permission === 'granted') {
         console.log('알림이 허용되었어');
-        // TODO(developer): Retrieve an Instance ID token for use with FCM.
-        // ...
-
-        // 토큰 테스트
-        // Get Instance ID token. Initially this makes a network call, once retrieved
-        // subsequent calls to getToken will return from cache.
-        messaging.getToken().then(function(currentToken) {
-          if (currentToken) {
-            console.log(currentToken)
-          } else {
-            // Show permission request.
-            console.log('No Instance ID token available. Request permission to generate one.');
-            // Show permission UI.
-          }
-        }).catch(function(err) {
-          console.log('An error occurred while retrieving token. ', err);
-
-        }); // 토큰 테스트 끝
-
-
-      } else {
+    } else {
         console.log('Unable to get permission to notify.');
       }
     })
-
     messaging.onMessage(function(payload){
       console.log('onMessage: ', payload)
-      alert('onMessage:', payload)
     })}, // alarm 함수 끝
+
+
 
     MessageSendTest(){
     // 이미 사용자가 웹페이지를 보고 있다면, 알림보다 메시지
     var key = 'AAAAaXJTSkI:APA91bGN9BUUuuk3nFfjd2suGLmQ2vmI9uuEdUSlIAxuDcTBC-_L1YzyZk13WCFZDtqx40O80hUIgvdGk_4KnsJZkUsc2ouddDlQbDBisNufRUF2JGAlyCGnS-TNGB5ctHUU4EXstJxt';
-    var to = 'dcUfi06MlDo:APA91bEupBnhfHpn1Zpv3-JMUs44oJn-SW4wp9gbzRmef4PsSdU3RgpYqbP-pniZQvVg1muJpoERr3BDeCgRiQhk08BE-96gm2JWr3EAxllb-Fgnl17xcxobEQX0rW3Bv59KVE_CiQQu';
+    var to = 'f-55HweHEVQ:APA91bG7Z8L_L1fQtgWFNcH1soC5LZ-cOlclKhZV9LzTERgt5IQEWX343xuXJrDxud6KMLGrCI31--BRdwEHLFTEFjzUkAUjUT4EBgC1OsrAD_O_QnaD0qi1yTXb1HrQEE_ByLEQRhLv'
     var notification = {
       'title': 'Portugal vs. Denmark',
       'body': '5 to 1',
       'icon': 'firebase-logo.png',
-      'click_action': 'http://localhost:8080'
+      'click_action': 'http://localhost:8081'
     };
 
 fetch('https://fcm.googleapis.com/fcm/send', {
@@ -99,21 +105,21 @@ fetch('https://fcm.googleapis.com/fcm/send', {
 })},
 
 
-  test() {
-    const axios = require('axios')
-    var storage = firebase.storage()
-    var pathReference = storage.ref('utf.txt')
-    pathReference.getDownloadURL().then(function(url) {
-      // console.log(url)
-      axios.get(url)
-        .then(function(response) {
-          // console.log(response.data)
-        })
-        .catch(function(error) {
-          console.log(error)
-        })
-    })
-  },
+  // test() {
+  //   const axios = require('axios')
+  //   var storage = firebase.storage()
+  //   var pathReference = storage.ref('result.json')
+  //   pathReference.getDownloadURL().then(function(url) {
+  //     // console.log(url)
+  //     axios.get(url)
+  //       .then(function(response) {
+  //         console.log(response.data)
+  //       })
+  //       .catch(function(error) {
+  //         console.log(error)
+  //       })
+  //   })
+  // },
 
   getComments(postId) {
     const commentCollection = firestore.collection(POSTS).doc(postId).collection(SNS)
@@ -125,6 +131,9 @@ fetch('https://fcm.googleapis.com/fcm/send', {
           let data = doc.data()
           // data.created_at = new Date(data.created_at.toDate())
           data.id = doc.id
+          console.log(2222)
+          var db = admin.firestore().collection(TOKEN).get()
+          console.log(db)
           return data
         })
       })
@@ -280,6 +289,7 @@ fetch('https://fcm.googleapis.com/fcm/send', {
       created_at: firebase.firestore.FieldValue.serverTimestamp()
     })
   },
+
   loginWithGoogle() {
     let provider = new firebase.auth.GoogleAuthProvider()
     return firebase.auth().signInWithPopup(provider).then(function(result) {
@@ -290,6 +300,7 @@ fetch('https://fcm.googleapis.com/fcm/send', {
       console.error('[Google Login Error]', error)
     })
   },
+
   loginWithFacebook() {
     let provider = new firebase.auth.FacebookAuthProvider()
     return firebase.auth().signInWithPopup(provider).then(function(result) {
